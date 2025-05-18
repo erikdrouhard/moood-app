@@ -81,7 +81,7 @@ export const MoodHistory: React.FC<MoodHistoryProps> = ({
               <div className="flex items-center gap-2">
                 <span>{format(new Date(entry.date), 'yyyy-MM-dd')}</span>
                 <span className="text-purple-600">
-                  {entry.mood > 0 ? '↗️' : entry.mood < 0 ? '↘️' : '→'}
+                  {entry.mood > 0 ? '↑' : entry.mood < 0 ? '↓' : '→'} {entry.mood}
                 </span>
               </div>
               <div className="flex gap-2">

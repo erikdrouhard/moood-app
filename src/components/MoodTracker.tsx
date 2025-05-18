@@ -197,8 +197,8 @@ const MoodTracker = () => {
     setCurrentPage(0);
   };
 
-  const downloadCSV = () => {
-    const formatDate = new Date().toISOString().split('T')[0];
+  const downloadCSV = (entry: MoodData) => {
+    const formatDate = format(new Date(entry.date), 'yyyy-MM-dd');
     const headers = [
       'Date', 'Mood', 'Mixed State', 'Sleep Hours', 'Uninterrupted Sleep',
       'Medications Taken', 'Medication Names', 'Therapy', 'Support Group',
@@ -208,21 +208,21 @@ const MoodTracker = () => {
 
     const values = [
       formatDate,
-      moodData.mood,
-      moodData.mixedState ? 'Yes' : 'No',
-      moodData.sleep,
-      moodData.uninterruptedSleep ? 'Yes' : 'No',
-      moodData.medication.taken ? 'Yes' : 'No',
-      moodData.medication.names,
-      moodData.therapy.attended ? 'Yes' : 'No',
-      moodData.supportGroup.attended ? 'Yes' : 'No',
-      moodData.meals.count,
-      moodData.meals.snacks,
-      moodData.exercise.done ? 'Yes' : 'No',
-      moodData.exercise.type,
-      moodData.physicalHealth.symptoms,
-      `Alcohol: ${moodData.substanceUse.alcohol ? 'Yes' : 'No'}, Drugs: ${moodData.substanceUse.drugs ? 'Yes' : 'No'}`,
-      moodData.generalNotes
+      entry.mood,
+      entry.mixedState ? 'Yes' : 'No',
+      entry.sleep,
+      entry.uninterruptedSleep ? 'Yes' : 'No',
+      entry.medication.taken ? 'Yes' : 'No',
+      entry.medication.names,
+      entry.therapy.attended ? 'Yes' : 'No',
+      entry.supportGroup.attended ? 'Yes' : 'No',
+      entry.meals.count,
+      entry.meals.snacks,
+      entry.exercise.done ? 'Yes' : 'No',
+      entry.exercise.type,
+      entry.physicalHealth.symptoms,
+      `Alcohol: ${entry.substanceUse.alcohol ? 'Yes' : 'No'}, Drugs: ${entry.substanceUse.drugs ? 'Yes' : 'No'}`,
+      entry.generalNotes
     ].join(',');
 
     const csvContent = `${headers}\n${values}`;
@@ -411,7 +411,7 @@ const MoodTracker = () => {
             Slide to match your mood
           </Label>
           <Slider
-            defaultValue={[moodData.mood]}
+            value={[moodData.mood]}
             max={4}
             min={-4}
             step={1}
