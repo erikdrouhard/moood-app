@@ -241,7 +241,7 @@ const MoodTracker = () => {
     const newHistory = moodHistory.filter(entry => entry.date !== entryDate);
     setMoodHistory(newHistory);
     localStorage.setItem('moodHistory', JSON.stringify(newHistory));
-    toast.success('Entry deleted! 🗑️');
+    toast.success('Entry deleted! 🗑');
   };
 
   const downloadAllCSV = () => {
