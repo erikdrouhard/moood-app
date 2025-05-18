@@ -114,4 +114,4 @@ export const MoodHistory: React.FC<MoodHistoryProps> = ({
       )}
     </div>
   );
-}; 
+};
