@@ -115,10 +115,17 @@ const MoodTracker = () => {
   const [moodHistory, setMoodHistory] = useState<MoodData[]>([]);
 
   useEffect(() => {
-    const savedData = localStorage.getItem('moodHistory');
-    if (savedData) {
-      setMoodHistory(JSON.parse(savedData));
-    }
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    fetch('http://localhost:3001/entries', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => setMoodHistory(data))
+      .catch(() => {
+        const savedData = localStorage.getItem('moodHistory');
+        if (savedData) setMoodHistory(JSON.parse(savedData));
+      });
   }, []);
 
   const handleSubmit = () => {
@@ -141,6 +148,17 @@ const MoodTracker = () => {
 
     setMoodHistory(newHistory);
     localStorage.setItem('moodHistory', JSON.stringify(newHistory));
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch('http://localhost:3001/entries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(moodData)
+      }).catch(() => {});
+    }
     setIsEditing(false);
     setCurrentPage(-1);
     setMoodData({
@@ -242,6 +260,17 @@ const MoodTracker = () => {
     setMoodHistory(newHistory);
     localStorage.setItem('moodHistory', JSON.stringify(newHistory));
     toast.success('Entry deleted! 🗑');
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetch(`http://localhost:3001/entries`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ date: entryDate })
+      }).catch(() => {});
+    }
   };
 
   const downloadAllCSV = () => {
