@@ -35,8 +35,8 @@ interface MoodData {
     notes: string;
   };
   meals: {
-    count: number;
-    snacks: number;
+    count: number | null;
+    snacks: number | null;
     notes: string;
   };
   exercise: {
@@ -84,8 +84,8 @@ const MoodTracker = () => {
       notes: ''
     },
     meals: {
-      count: 0,
-      snacks: 0,
+      count: null,
+      snacks: null,
       notes: ''
     },
     exercise: {
@@ -163,8 +163,8 @@ const MoodTracker = () => {
         notes: ''
       },
       meals: {
-        count: 0,
-        snacks: 0,
+        count: null,
+        snacks: null,
         notes: ''
       },
       exercise: {
@@ -216,8 +216,8 @@ const MoodTracker = () => {
       entry.medication.names,
       entry.therapy.attended ? 'Yes' : 'No',
       entry.supportGroup.attended ? 'Yes' : 'No',
-      entry.meals.count,
-      entry.meals.snacks,
+      entry.meals.count ?? '',
+      entry.meals.snacks ?? '',
       entry.exercise.done ? 'Yes' : 'No',
       entry.exercise.type,
       entry.physicalHealth.symptoms,
@@ -262,8 +262,8 @@ const MoodTracker = () => {
       entry.medication.names,
       entry.therapy.attended ? 'Yes' : 'No',
       entry.supportGroup.attended ? 'Yes' : 'No',
-      entry.meals.count,
-      entry.meals.snacks,
+      entry.meals.count ?? '',
+      entry.meals.snacks ?? '',
       entry.exercise.done ? 'Yes' : 'No',
       entry.exercise.type,
       entry.physicalHealth.symptoms,
@@ -314,8 +314,8 @@ const MoodTracker = () => {
               notes: ''
             },
             meals: {
-              count: parseInt(values[9]),
-              snacks: parseInt(values[10]),
+              count: values[9] ? parseInt(values[9], 10) : null,
+              snacks: values[10] ? parseInt(values[10], 10) : null,
               notes: ''
             },
             exercise: {
@@ -529,10 +529,13 @@ const MoodTracker = () => {
               type="number"
               min="0"
               max="10"
-              value={moodData.meals.count}
+              value={moodData.meals.count ?? ''}
               onChange={(e) => setMoodData({
                 ...moodData,
-                meals: {...moodData.meals, count: parseInt(e.target.value) || 0}
+                meals: {
+                  ...moodData.meals,
+                  count: e.target.value === '' ? null : parseInt(e.target.value, 10)
+                }
               })}
             />
           </div>
@@ -543,10 +546,13 @@ const MoodTracker = () => {
               type="number"
               min="0"
               max="10"
-              value={moodData.meals.snacks}
+              value={moodData.meals.snacks ?? ''}
               onChange={(e) => setMoodData({
                 ...moodData,
-                meals: {...moodData.meals, snacks: parseInt(e.target.value) || 0}
+                meals: {
+                  ...moodData.meals,
+                  snacks: e.target.value === '' ? null : parseInt(e.target.value, 10)
+                }
               })}
             />
           </div>
