@@ -18,8 +18,8 @@ export interface MoodData {
     notes: string;
   };
   meals: {
-    count: number;
-    snacks: number;
+    count: number | null;
+    snacks: number | null;
     notes: string;
   };
   exercise: {
