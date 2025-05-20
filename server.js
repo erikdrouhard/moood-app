@@ -1,8 +1,10 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const cors = require('cors');
+import express from 'express';
+import sqlite3Pkg from 'sqlite3';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
+
+const sqlite3 = sqlite3Pkg.verbose();
 
 const app = express();
 app.use(cors());
