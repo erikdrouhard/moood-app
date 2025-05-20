@@ -2,7 +2,7 @@ import MoodTracker from './components/MoodTracker';
 import { ThemeProvider } from './components/theme-provider';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
   const [token, setToken] = useState<string | null>(null);
