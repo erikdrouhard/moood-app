@@ -2,6 +2,7 @@ import MoodTracker from './components/MoodTracker';
 import { ThemeProvider } from './components/theme-provider';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
+import CowHeader from './components/CowHeader';
 import { useState, useEffect } from 'react';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <CowHeader />
       {!token ? (
         mode === 'login' ? (
           <div>
