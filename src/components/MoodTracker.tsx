@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { MoodGraph } from './MoodGraph';
 import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
+import MoodSummary from './MoodSummary';
 import { Toaster, toast } from 'sonner';
 
 interface MoodData {
@@ -64,6 +65,7 @@ interface MoodData {
 
 const MoodTracker = () => {
   const [currentPage, setCurrentPage] = useState(-1);
+  const [summaryData, setSummaryData] = useState<MoodData | null>(null);
   const [moodData, setMoodData] = useState<MoodData>({
     date: new Date().toISOString(),
     mood: 0,
@@ -159,6 +161,7 @@ const MoodTracker = () => {
         body: JSON.stringify(moodData)
       }).catch(() => {});
     }
+    setSummaryData(moodData);
     setIsEditing(false);
     setCurrentPage(-1);
     setMoodData({
@@ -674,6 +677,9 @@ const MoodTracker = () => {
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
       <Toaster position="top-center" />
+      {summaryData && (
+        <MoodSummary data={summaryData} onClose={() => setSummaryData(null)} />
+      )}
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
