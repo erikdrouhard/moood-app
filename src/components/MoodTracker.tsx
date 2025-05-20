@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
 import { motion } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Download, Upload } from 'lucide-react';
 import { format } from 'date-fns';
@@ -119,7 +121,7 @@ const MoodTracker = () => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) return;
-    fetch('http://localhost:3001/entries', {
+    fetch(`${API_BASE}/entries`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -152,7 +154,7 @@ const MoodTracker = () => {
     localStorage.setItem('moodHistory', JSON.stringify(newHistory));
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('http://localhost:3001/entries', {
+      fetch(`${API_BASE}/entries`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -265,7 +267,7 @@ const MoodTracker = () => {
     toast.success('Entry deleted! 🗑');
     const token = localStorage.getItem('token');
     if (token) {
-      fetch(`http://localhost:3001/entries`, {
+      fetch(`${API_BASE}/entries`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
