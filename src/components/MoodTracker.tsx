@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 import { motion } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Download, Upload } from 'lucide-react';
 import { format } from 'date-fns';
