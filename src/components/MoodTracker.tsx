@@ -15,7 +15,8 @@ import { Switch } from "@/components/ui/switch"
 import { MoodGraph } from './MoodGraph';
 import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
-import { Toaster, toast } from 'sonner';
+import { toast } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 interface MoodData {
   date: string;

@@ -47,6 +47,28 @@
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
+
+  .fun {
+    --background: 340 100% 97%;
+    --foreground: 202 100% 10%;
+    --card: 340 100% 97%;
+    --card-foreground: 202 100% 10%;
+    --popover: 340 100% 97%;
+    --popover-foreground: 202 100% 10%;
+    --primary: 265 100% 70%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 48 100% 80%;
+    --secondary-foreground: 202 100% 10%;
+    --muted: 190 100% 85%;
+    --muted-foreground: 202 100% 10%;
+    --accent: 10 100% 80%;
+    --accent-foreground: 202 100% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 265 100% 70%;
+    --input: 265 100% 70%;
+    --ring: 265 100% 70%;
+  }
 }
 
 @layer base {
