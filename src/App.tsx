@@ -1,5 +1,6 @@
 import MoodTracker from './components/MoodTracker';
 import { ThemeProvider } from './components/theme-provider';
+import ThemeSwitcher from './components/ThemeSwitcher';
 import Login from './components/auth/Login';
 import Signup from './components/auth/Signup';
 import { useState, useEffect } from 'react';
@@ -24,6 +25,9 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <div className="absolute left-4 top-4">
+        <ThemeSwitcher />
+      </div>
       {!token ? (
         mode === 'login' ? (
           <div>
