@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Input } from '@/components/ui/input';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -32,14 +33,12 @@ export default function Login({ onLogin }: Props) {
     <form onSubmit={submit} className="space-y-4 max-w-sm mx-auto mt-10">
       <h2 className="text-xl font-bold">Login</h2>
       {error && <p className="text-red-500">{error}</p>}
-      <input
-        className="border w-full p-2"
+      <Input
         placeholder="Username"
         value={username}
         onChange={e => setUsername(e.target.value)}
       />
-      <input
-        className="border w-full p-2"
+      <Input
         type="password"
         placeholder="Password"
         value={password}
