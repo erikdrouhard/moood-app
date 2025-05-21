@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
 
@@ -34,23 +36,31 @@ export default function Login({ onLogin }: Props) {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-4 max-w-sm mx-auto mt-10">
-      <h2 className="text-xl font-bold">Login</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      <Input
-        placeholder="Username"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-      />
-      <Input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-      />
-      <button className="bg-purple-600 text-white px-4 py-2" type="submit">
-        Login
-      </button>
+    <form onSubmit={submit} className="mx-auto mt-10 max-w-sm">
+      <Card>
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {error && <p className="text-red-500">{error}</p>}
+          <Input
+            placeholder="Username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" className="w-full">
+            Login
+          </Button>
+        </CardFooter>
+      </Card>
     </form>
   );
 }

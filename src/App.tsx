@@ -32,9 +32,12 @@ function App() {
         mode === 'login' ? (
           <div>
             <Login onLogin={handleAuth} />
-            <p className="text-center mt-4">
+            <p className="mt-4 text-center">
               No account?{' '}
-              <button className="underline" onClick={() => setMode('signup')}>
+              <button
+                className="underline text-primary"
+                onClick={() => setMode('signup')}
+              >
                 Sign up
               </button>
             </p>
@@ -42,9 +45,12 @@ function App() {
         ) : (
           <div>
             <Signup onSignup={handleAuth} />
-            <p className="text-center mt-4">
+            <p className="mt-4 text-center">
               Have an account?{' '}
-              <button className="underline" onClick={() => setMode('login')}>
+              <button
+                className="underline text-primary"
+                onClick={() => setMode('login')}
+              >
                 Log in
               </button>
             </p>
