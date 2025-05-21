@@ -24,8 +24,12 @@ export default function Signup({ onSignup }: Props) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Signup failed');
       onSignup(data.token);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unknown error occurred');
+      }
     }
   };
 
