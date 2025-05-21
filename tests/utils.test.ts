@@ -13,4 +13,8 @@ describe('cn', () => {
   it('handles conditional classes', () => {
     expect(cn('foo', { bar: true, baz: false })).toBe('foo bar');
   });
+
+  it('handles newlines and extra whitespace', () => {
+    expect(cn('foo\nbar', 'bar')).toBe('foo bar');
+  });
 });
