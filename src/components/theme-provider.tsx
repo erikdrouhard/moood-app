@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react"
 
-type Theme = "dark" | "light" | "fun" | "system"
+export type Theme = "dark" | "light" | "fun" | "system"
 
 type ThemeProviderProps = {
   children: React.ReactNode
