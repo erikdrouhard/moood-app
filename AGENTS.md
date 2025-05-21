@@ -8,3 +8,6 @@ This file defines instructions for automated agents working on this repository.
   code quality and that the test suite passes.
 - Include a concise summary of the changes in the pull request description.
 
+## UI/UX
+
+- <https://deepwiki.com/shadcn-ui/ui>
