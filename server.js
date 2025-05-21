@@ -43,13 +43,27 @@ function authMiddleware(req, res, next) {
 }
 
 app.post('/signup', (req, res) => {
-  const { username, password } = req.body;
-  const hashed = bcrypt.hashSync(password, 10);
-  db.run('INSERT INTO users(username, password) VALUES(?, ?)', [username, hashed], function(err) {
-    if (err) return res.status(400).json({ error: 'User exists' });
-    const token = jwt.sign({ id: this.lastID }, SECRET);
-    res.json({ token });
-  });
+  try {
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Username and password are required' });
+    }
+    const hashed = bcrypt.hashSync(password, 10);
+    db.run('INSERT INTO users(username, password) VALUES(?, ?)', [username, hashed], function(err) {
+      if (err) {
+        console.error('Database error during signup:', err);
+        if (err.message && err.message.includes('UNIQUE constraint failed: users.username')) {
+          return res.status(400).json({ error: 'User already exists' });
+        }
+        return res.status(500).json({ error: 'Database error during signup' });
+      }
+      const token = jwt.sign({ id: this.lastID }, SECRET);
+      res.json({ token });
+    });
+  } catch (error) {
+    console.error('Unexpected error during signup:', error);
+    res.status(500).json({ error: 'An unexpected error occurred during signup' });
+  }
 });
 
 app.post('/login', (req, res) => {
