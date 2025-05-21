@@ -79,7 +79,7 @@ app.post('/entries', authMiddleware, (req, res) => {
 
 app.delete('/entries', authMiddleware, (req, res) => {
   const { date } = req.body;
-  db.run('DELETE FROM entries WHERE user_id = ? AND json_extract(data, $.date) = ?', [req.userId, date], function(err) {
+  db.run("DELETE FROM entries WHERE user_id = ? AND json_extract(data, '$.date') = ?", [req.userId, date], function(err) {
     if (err) return res.status(500).json({ error: 'db error' });
     res.json({ deleted: this.changes });
   });
