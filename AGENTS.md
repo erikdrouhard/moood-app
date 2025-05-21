@@ -57,7 +57,19 @@ This project uses shadcn-ui. These components are typically added via a CLI, and
 ## Linting and Testing
 
 - Run linter: `npm run lint`
-- Run tests: `npm run test`
+- Run all tests: `npm test` (which likely executes `vitest run` as per your `package.json`)
+- To run specific tests, you can often use pattern matching with Vitest. For example: `npx vitest run -t "my specific test name"` (replace `"my specific test name"` with the actual test name or a pattern).
+- Always add or update tests for the code you change, even if not explicitly asked. Ensure all tests pass before considering a task complete.
+- After moving files or changing imports, re-run `npm run lint` to ensure ESLint and TypeScript rules still pass.
+
+## Pull Request (PR) Instructions
+
+- **Title Format**: Use a clear and descriptive title, preferably prefixed with the main area of change. Examples:
+  - `[Auth] Implement password reset functionality`
+  - `[Dashboard] Add new mood summary widget`
+  - `[UI] Update global button styles`
+  - `[Server] Fix bug in user data endpoint`
+- **Description**: Include a concise summary of the changes in the pull request description (as previously mentioned).
 
 ## UI/UX
 
