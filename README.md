@@ -34,4 +34,3 @@ For a deployed environment set `VITE_API_BASE_URL` to the URL of the hosted API 
 If you are deploying with Netlify, add `VITE_API_BASE_URL` to your site's Environment
 variables so the frontend knows where to reach the API. You can skip running the
 local server if you rely entirely on the deployed backend.
-
