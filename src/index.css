@@ -78,6 +78,8 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGhlaWdodD0iNDAiIHdpZHRoPSI0MCI+PHRleHQgeT0iMzIiIGZvbnQtc2l6ZT0iMzIiPvCfkIQ8L3RleHQ+PC9zdmc+");
+    background-repeat: repeat;
   }
 }
 /* Confetti styles */
