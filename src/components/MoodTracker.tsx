@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
 import MoodSummary from './MoodSummary';
 import { Toaster, toast } from 'sonner';
+import Leaderboard from './Leaderboard';
 
 interface MoodData {
   date: string;
@@ -677,8 +678,9 @@ const MoodTracker = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-b from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
+    <div className="relative min-h-screen w-full bg-gradient-to-b from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
       <Toaster position="top-center" />
+      <Leaderboard />
       {summaryData && (
         <MoodSummary data={summaryData} onClose={() => setSummaryData(null)} />
       )}
