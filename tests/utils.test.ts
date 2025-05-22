@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cn } from '../src/lib/utils';
+import { cn, getWelcomeMessage } from '../src/lib/utils';
 
 describe('cn', () => {
   it('joins class names', () => {
@@ -16,5 +16,15 @@ describe('cn', () => {
 
   it('handles newlines and extra whitespace', () => {
     expect(cn('foo\nbar', 'bar')).toBe('foo bar');
+  });
+});
+
+describe('getWelcomeMessage', () => {
+  it('returns default welcome when name is empty', () => {
+    expect(getWelcomeMessage('')).toBe('Welcome!');
+  });
+
+  it('returns personalized welcome when name provided', () => {
+    expect(getWelcomeMessage('Alice')).toBe('Welcome Alice!');
   });
 });

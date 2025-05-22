@@ -13,6 +13,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from "@/components/ui/switch"
 import { MoodGraph } from './MoodGraph';
+import WelcomeUser from './WelcomeUser';
 import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
 import MoodSummary from './MoodSummary';
@@ -381,6 +382,7 @@ const MoodTracker = () => {
       title: "Mooood Dashboard 🐮",
       component: (
         <div className="space-y-6">
+          <WelcomeUser />
           <MoodGraph data={moodHistory} />
           <div className="flex justify-center gap-4 mb-6">
             <Button 
