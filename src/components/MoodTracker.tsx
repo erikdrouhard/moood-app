@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
 import MoodSummary from './MoodSummary';
 import { Toaster, toast } from 'sonner';
+import MotivationalCorner from './MotivationalCorner';
 
 interface MoodData {
   date: string;
@@ -670,6 +671,7 @@ const MoodTracker = () => {
       {summaryData && (
         <MoodSummary data={summaryData} onClose={() => setSummaryData(null)} />
       )}
+      {currentPage === 1 && <MotivationalCorner position="top-left" />}
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
