@@ -2,19 +2,12 @@ import React from 'react';
 import { MoodData } from '@/types/mood';
 import Confetti from './Confetti';
 import { Button } from '@/components/ui/button';
+import MotivationalCorner from './MotivationalCorner';
 
 interface Props {
   data: MoodData;
   onClose: () => void;
 }
-
-const quotes = [
-  'Great job staying mindful today!',
-  'Every step counts, keep going!',
-  'You are doing amazing, celebrate the wins!',
-];
-
-const getQuote = () => quotes[Math.floor(Math.random() * quotes.length)];
 
 const MoodSummary: React.FC<Props> = ({ data, onClose }) => {
   const lines = [
@@ -37,9 +30,9 @@ const MoodSummary: React.FC<Props> = ({ data, onClose }) => {
           ))}
           {data.generalNotes && <li>Notes: {data.generalNotes}</li>}
         </ul>
-        <p className="font-semibold">{getQuote()}</p>
         <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={onClose}>Awesome!</Button>
       </div>
+      <MotivationalCorner position="bottom-right" />
       <Confetti />
     </div>
   );

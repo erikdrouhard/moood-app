@@ -13,11 +13,13 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from "@/components/ui/switch"
 import { MoodGraph } from './MoodGraph';
+import WelcomeUser from './WelcomeUser';
 import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
 import MoodSummary from './MoodSummary';
 import { Toaster, toast } from 'sonner';
 import Leaderboard from './Leaderboard';
+
 
 interface MoodData {
   date: string;
@@ -120,11 +122,7 @@ const MoodTracker = () => {
   const [moodHistory, setMoodHistory] = useState<MoodData[]>([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    fetch(`${API_BASE}/entries`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    fetch(`${API_BASE}/entries`)
       .then(res => res.json())
       .then(data => setMoodHistory(data))
       .catch(() => {
@@ -153,17 +151,13 @@ const MoodTracker = () => {
 
     setMoodHistory(newHistory);
     localStorage.setItem('moodHistory', JSON.stringify(newHistory));
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch(`${API_BASE}/entries`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(moodData)
-      }).catch(() => {});
-    }
+    fetch(`${API_BASE}/entries`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(moodData)
+    }).catch(() => {});
     setSummaryData(moodData);
     setIsEditing(false);
     setCurrentPage(-1);
@@ -266,17 +260,13 @@ const MoodTracker = () => {
     setMoodHistory(newHistory);
     localStorage.setItem('moodHistory', JSON.stringify(newHistory));
     toast.success('Entry deleted! 🗑');
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetch(`${API_BASE}/entries`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ date: entryDate })
-      }).catch(() => {});
-    }
+    fetch(`${API_BASE}/entries`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ date: entryDate })
+    }).catch(() => {});
   };
 
   const downloadAllCSV = () => {
@@ -393,6 +383,7 @@ const MoodTracker = () => {
       title: "Mooood Dashboard 🐮",
       component: (
         <div className="space-y-6">
+          <WelcomeUser />
           <MoodGraph data={moodHistory} />
           <div className="flex justify-center gap-4 mb-6">
             <Button 
@@ -684,6 +675,7 @@ const MoodTracker = () => {
       {summaryData && (
         <MoodSummary data={summaryData} onClose={() => setSummaryData(null)} />
       )}
+      {currentPage === 1 && <MotivationalCorner position="top-left" />}
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

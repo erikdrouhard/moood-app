@@ -10,3 +10,7 @@ export function cn(...inputs: ClassValue[]) {
     .join(' ');
   return twMerge(joined);
 }
+
+export function getWelcomeMessage(name: string) {
+  return name ? `Welcome ${name}!` : 'Welcome!';
+}
