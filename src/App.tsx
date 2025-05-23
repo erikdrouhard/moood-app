@@ -5,7 +5,7 @@ import ThemeSwitcher from './components/ThemeSwitcher';
 function App() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <div className="absolute left-4 top-4">
+      <div className="fixed left-4 top-4 z-50">
         <ThemeSwitcher />
       </div>
       <MoodTracker />

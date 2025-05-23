@@ -8,8 +8,12 @@ const Leaderboard = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm" className="absolute right-4 top-16">
-          Leaderboard
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="fixed right-4 top-4 z-50 shadow-sm hover:shadow-md transition-all duration-200"
+        >
+          🏆 Leaderboard
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-72 sm:w-80">

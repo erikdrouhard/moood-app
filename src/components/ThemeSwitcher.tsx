@@ -1,21 +1,37 @@
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
-import { useTheme, type Theme } from './theme-provider';
+import { Button } from '@/components/ui/button';
+import { useTheme } from './theme-provider';
+import { Moon, Sun } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <Select value={theme} onValueChange={(value) => setTheme(value as Theme)}>
-      <SelectTrigger className="w-[120px]">
-        <SelectValue placeholder="Theme" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="light">Light</SelectItem>
-        <SelectItem value="dark">Dark</SelectItem>
-        <SelectItem value="fun">Fun</SelectItem>
-        <SelectItem value="system">System</SelectItem>
-      </SelectContent>
-    </Select>
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={toggleTheme}
+      className="relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-200"
+    >
+      <motion.div
+        initial={false}
+        animate={{
+          rotate: theme === 'dark' ? 180 : 0,
+          scale: theme === 'dark' ? 0.9 : 1,
+        }}
+        transition={{ duration: 0.3 }}
+      >
+        {theme === 'dark' ? (
+          <Moon className="h-4 w-4" />
+        ) : (
+          <Sun className="h-4 w-4" />
+        )}
+      </motion.div>
+    </Button>
   );
 };
 

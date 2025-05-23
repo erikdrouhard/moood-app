@@ -388,7 +388,8 @@ const MoodTracker = () => {
           <div className="flex justify-center gap-4 mb-6">
             <Button 
               onClick={() => setCurrentPage(1)}
-              className="bg-purple-600 hover:bg-purple-700"
+              size="lg"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
             >
               🌟 Hay! Let's Track Today's Moood! 
             </Button>
@@ -436,18 +437,30 @@ const MoodTracker = () => {
           <Label className="block text-lg font-medium">
             Slide to match your mood
           </Label>
-          <Slider
-            value={[moodData.mood]}
-            max={4}
-            min={-4}
-            step={1}
-            className="w-full"
-            onValueChange={(value) => setMoodData({...moodData, mood: value[0]})}
-          />
-          <div className="text-center text-sm text-purple-600 dark:text-purple-400">
-            {moodData.mood === 0 ? "Stable as a barn! 🏠" :
-             moodData.mood > 0 ? "Feeling more energetic than usual" :
-             "Feeling lower than usual"}
+          <div className="relative">
+            <Slider
+              value={[moodData.mood]}
+              max={4}
+              min={-4}
+              step={1}
+              className="w-full"
+              onValueChange={(value) => setMoodData({...moodData, mood: value[0]})}
+            />
+            <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-2">
+              <span>😔 Low</span>
+              <span>😌 Stable</span>
+              <span>😄 High</span>
+            </div>
+          </div>
+          <div className="text-center p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+            <div className="text-2xl mb-2">
+              {moodData.mood <= -3 ? '😔' : moodData.mood <= -1 ? '😐' : moodData.mood === 0 ? '😌' : moodData.mood <= 2 ? '😊' : '😄'}
+            </div>
+            <div className="text-sm font-medium text-purple-700 dark:text-purple-300">
+              {moodData.mood === 0 ? "Stable as a barn! 🏠" :
+               moodData.mood > 0 ? `Feeling more energetic than usual (${moodData.mood > 2 ? 'Very High' : 'Elevated'})` :
+               `Feeling lower than usual (${moodData.mood < -2 ? 'Very Low' : 'Low'})`}
+            </div>
           </div>
           <div className="mt-4">
             <Label className="block text-lg font-medium mb-2">
@@ -471,13 +484,17 @@ const MoodTracker = () => {
         <div className="space-y-6">
           <div className="space-y-4">
             <Label className="block text-lg">Hours of Sleep</Label>
-            <Input 
-              type="number" 
-              placeholder="Hours of sleep"
-              className="text-center text-xl"
-              value={moodData.sleep}
-              onChange={(e) => setMoodData({...moodData, sleep: e.target.value})}
-            />
+            <div className="relative">
+              <Input 
+                type="number" 
+                placeholder="0"
+                className="text-center text-xl font-semibold pl-8 pr-12"
+                value={moodData.sleep}
+                onChange={(e) => setMoodData({...moodData, sleep: e.target.value})}
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">💤</span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">hours</span>
+            </div>
             <div className="flex items-center space-x-2 mt-4">
               <Checkbox
                 id="uninterrupted"
@@ -485,7 +502,12 @@ const MoodTracker = () => {
                 onCheckedChange={(checked) => 
                   setMoodData({...moodData, uninterruptedSleep: checked as boolean})}
               />
-              <Label htmlFor="uninterrupted">Uninterrupted Sleep</Label>
+              <Label htmlFor="uninterrupted" className="cursor-pointer">
+                Uninterrupted Sleep
+                <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                  {moodData.uninterruptedSleep ? '✨ Great!' : ''}
+                </span>
+              </Label>
             </div>
           </div>
         </div>
@@ -495,51 +517,74 @@ const MoodTracker = () => {
       title: "Medications & Support 💊",
       component: (
         <div className="space-y-6">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="medication"
-              checked={moodData.medication.taken}
-              onCheckedChange={(checked) => 
-                setMoodData({
-                  ...moodData, 
-                  medication: {...moodData.medication, taken: checked as boolean}
-                })}
-            />
-            <Label htmlFor="medication">Took medications today</Label>
-          </div>
-          {moodData.medication.taken && (
-            <Input
-              placeholder="Medication names & doses"
-              value={moodData.medication.names}
-              onChange={(e) => setMoodData({
-                ...moodData, 
-                medication: {...moodData.medication, names: e.target.value}
-              })}
-            />
-          )}
-          <div className="flex items-center space-x-2 mt-4">
-            <Checkbox
-              id="therapy"
-              checked={moodData.therapy.attended}
-              onCheckedChange={(checked) => 
-                setMoodData({
-                  ...moodData, 
-                  therapy: {...moodData.therapy, attended: checked as boolean}
-                })}
-            />
-            <Label htmlFor="therapy">Attended therapy today</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="support"
-              checked={moodData.supportGroup.attended}
-              onCheckedChange={(checked) => 
-                setMoodData({
-                  ...moodData, 
-                  supportGroup: {...moodData.supportGroup, attended: checked as boolean}
-                })}
-            />
-            <Label htmlFor="support">Attended support group</Label>
+          <div className="space-y-3">
+            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="medication"
+                  checked={moodData.medication.taken}
+                  onCheckedChange={(checked) => 
+                    setMoodData({
+                      ...moodData, 
+                      medication: {...moodData.medication, taken: checked as boolean}
+                    })}
+                />
+                <Label htmlFor="medication" className="cursor-pointer font-medium">
+                  💊 Took medications today
+                </Label>
+              </div>
+              {moodData.medication.taken && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  className="mt-3"
+                >
+                  <Input
+                    placeholder="Which medications? (optional)"
+                    value={moodData.medication.names}
+                    onChange={(e) => setMoodData({
+                      ...moodData, 
+                      medication: {...moodData.medication, names: e.target.value}
+                    })}
+                    className="bg-white dark:bg-gray-800"
+                  />
+                </motion.div>
+              )}
+            </div>
+            
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="therapy"
+                  checked={moodData.therapy.attended}
+                  onCheckedChange={(checked) => 
+                    setMoodData({
+                      ...moodData, 
+                      therapy: {...moodData.therapy, attended: checked as boolean}
+                    })}
+                />
+                <Label htmlFor="therapy" className="cursor-pointer font-medium">
+                  🧠 Attended therapy today
+                </Label>
+              </div>
+            </div>
+            
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="support"
+                  checked={moodData.supportGroup.attended}
+                  onCheckedChange={(checked) => 
+                    setMoodData({
+                      ...moodData, 
+                      supportGroup: {...moodData.supportGroup, attended: checked as boolean}
+                    })}
+                />
+                <Label htmlFor="support" className="cursor-pointer font-medium">
+                  🤝 Attended support group
+                </Label>
+              </div>
+            </div>
           </div>
         </div>
       )
@@ -548,22 +593,49 @@ const MoodTracker = () => {
       title: "Nutrition & Exercise 🥗",
       component: (
         <div className="space-y-6">
-          <div className="space-y-4">
-            <Label htmlFor="meals">Number of Meals Today</Label>
-            <Input
-              id="meals"
-              type="number"
-              min="0"
-              max="10"
-              value={moodData.meals.count ?? ''}
-              onChange={(e) => setMoodData({
-                ...moodData,
-                meals: {
-                  ...moodData.meals,
-                  count: e.target.value === '' ? null : parseInt(e.target.value, 10)
-                }
-              })}
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="meals" className="text-sm font-medium flex items-center gap-1">
+                🍽️ Meals Today
+              </Label>
+              <Input
+                id="meals"
+                type="number"
+                min="0"
+                max="10"
+                placeholder="0"
+                className="text-center font-semibold"
+                value={moodData.meals.count ?? ''}
+                onChange={(e) => setMoodData({
+                  ...moodData,
+                  meals: {
+                    ...moodData.meals,
+                    count: e.target.value === '' ? null : parseInt(e.target.value, 10)
+                  }
+                })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="snacks" className="text-sm font-medium flex items-center gap-1">
+                🍎 Snacks Today
+              </Label>
+              <Input
+                id="snacks"
+                type="number"
+                min="0"
+                max="10"
+                placeholder="0"
+                className="text-center font-semibold"
+                value={moodData.meals.snacks ?? ''}
+                onChange={(e) => setMoodData({
+                  ...moodData,
+                  meals: {
+                    ...moodData.meals,
+                    snacks: e.target.value === '' ? null : parseInt(e.target.value, 10)
+                  }
+                })}
+              />
+            </div>
           </div>
           <div className="space-y-4">
             <Label htmlFor="snacks">Number of Snacks</Label>
@@ -653,38 +725,49 @@ const MoodTracker = () => {
       title: "Additional Notes 📝",
       component: (
         <div className="space-y-6">
-          <Textarea
-            placeholder="Any other thoughts, feelings, or experiences..."
-            className="h-40"
-            value={moodData.generalNotes}
-            onChange={(e) => setMoodData({...moodData, generalNotes: e.target.value})}
-          />
-          <MoodGraph data={moodHistory} />
-          <p className="text-center text-sm text-purple-600 dark:text-purple-400">
-            You're doing great! Every day is a mooo-ving journey 
-          </p>
+          <div className="space-y-2">
+            <Label htmlFor="notes" className="text-sm font-medium">
+              How was your day overall? Any other thoughts?
+            </Label>
+            <Textarea
+              id="notes"
+              placeholder="Share anything else on your mind... 🐮"
+              className="h-32 resize-none"
+              value={moodData.generalNotes}
+              onChange={(e) => setMoodData({...moodData, generalNotes: e.target.value})}
+            />
+          </div>
+          
+          <div className="p-6 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-lg text-center">
+            <p className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">
+              Ready to save your entry! 🎆
+            </p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              You're doing great! Every day is a mooo-ving journey 🐄
+            </p>
+          </div>
         </div>
       )
     }
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-b from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900">
-      <Toaster position="top-center" />
+    <div className="relative min-h-screen w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-purple-950 dark:via-purple-900 dark:to-blue-950">
+      <Toaster position="top-center" richColors />
       <Leaderboard />
       {summaryData && (
         <MoodSummary data={summaryData} onClose={() => setSummaryData(null)} />
       )}
-      {currentPage === 1 && <MotivationalCorner position="top-left" />}
+      {/* Motivational messages can be added here if needed */}
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="max-w-[450px] mx-auto"
+          className="max-w-[480px] mx-auto"
         >
-          <Card className="shadow-xl">
-            <CardContent className="p-6">
+          <Card className="shadow-2xl border-0 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm">
+            <CardContent className="p-8">
               {currentPage === -1 ? (
                 pages[0].component
               ) : (
@@ -695,9 +778,26 @@ const MoodTracker = () => {
                   exit={{ opacity: 0, x: -20 }}
                   className="space-y-6"
                 >
-                  <h2 className="text-2xl font-bold text-purple-700 dark:text-purple-300 text-center mb-6">
-                    {pages[currentPage].title}
-                  </h2>
+                  <div className="space-y-4">
+                    {/* Progress Bar */}
+                    <div className="relative">
+                      <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${((currentPage + 1) / pages.length) * 100}%` }}
+                          transition={{ duration: 0.3 }}
+                        />
+                      </div>
+                      <div className="absolute -top-6 right-0 text-xs text-gray-500 dark:text-gray-400">
+                        Step {currentPage + 1} of {pages.length}
+                      </div>
+                    </div>
+                    
+                    <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">
+                      {pages[currentPage].title}
+                    </h2>
+                  </div>
                   
                   <div className="space-y-6">
                     {pages[currentPage].component}
@@ -708,9 +808,10 @@ const MoodTracker = () => {
                       variant="outline"
                       onClick={() => currentPage === 0 ? setCurrentPage(-1) : setCurrentPage(currentPage - 1)}
                       className={cn(
-                        "w-full sm:w-20",
+                        "w-full sm:w-auto px-4",
                         "transition-all duration-200 ease-in-out",
-                        "flex items-center justify-center gap-2"
+                        "flex items-center justify-center gap-2",
+                        "hover:bg-purple-50 dark:hover:bg-purple-900/20"
                       )}
                     >
                       <ChevronLeft className="h-4 w-4" />
@@ -721,10 +822,10 @@ const MoodTracker = () => {
                       <Button
                         onClick={handleSubmit}
                         className={cn(
-                          "w-full sm:w-32",
-                          "bg-purple-600 hover:bg-purple-700",
-                          "transition-all duration-200 ease-in-out",
-                          "flex items-center justify-center gap-2"
+                          "w-full sm:w-auto px-6",
+                          "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700",
+                          "transition-all duration-200 ease-in-out shadow-lg",
+                          "flex items-center justify-center gap-2 text-white"
                         )}
                       >
                         <span>{isEditing ? 'Update' : 'Submit'}</span>
@@ -733,10 +834,10 @@ const MoodTracker = () => {
                       <Button
                         onClick={() => setCurrentPage(currentPage + 1)}
                         className={cn(
-                          "w-full sm:w-20",
-                          "bg-purple-600 hover:bg-purple-700",
-                          "transition-all duration-200 ease-in-out",
-                          "flex items-center justify-center gap-2"
+                          "w-full sm:w-auto px-4",
+                          "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700",
+                          "transition-all duration-200 ease-in-out shadow-lg",
+                          "flex items-center justify-center gap-2 text-white"
                         )}
                       >
                         <span className="sm:hidden">Next</span>
