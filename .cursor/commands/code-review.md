@@ -1,0 +1,6 @@
+Perform a deep review of the current diff from this branch against main using `git` and commands in package.json
+
+Goal of review is to find critical security and performance bugs.
+
+If you find any issues, take not with a suggestion for improvement
+

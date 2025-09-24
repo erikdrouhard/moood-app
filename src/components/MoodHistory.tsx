@@ -110,7 +110,7 @@ export const MoodHistory: React.FC<MoodHistoryProps> = ({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100 }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ delay: Math.min(index * 0.01, 0.1) }}
                 className="group relative overflow-hidden"
               >
                 <div className="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 dark:border-gray-700">
