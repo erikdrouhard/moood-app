@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL || '';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, ChevronLeft, Download, Upload } from 'lucide-react';
-import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -17,196 +14,34 @@ import WelcomeUser from './WelcomeUser';
 import { cn } from '@/lib/utils';
 import { MoodHistory } from './MoodHistory';
 import MoodSummary from './MoodSummary';
-import { Toaster, toast } from 'sonner';
+import { Toaster } from 'sonner';
 import Leaderboard from './Leaderboard';
-
-
-interface MoodData {
-  date: string;
-  mood: number;
-  mixedState: boolean;
-  sleep: string;
-  uninterruptedSleep: boolean;
-  medication: {
-    taken: boolean;
-    names: string;
-    notes: string;
-  };
-  therapy: {
-    attended: boolean;
-    notes: string;
-  };
-  supportGroup: {
-    attended: boolean;
-    notes: string;
-  };
-  meals: {
-    count: number | null;
-    snacks: number | null;
-    notes: string;
-  };
-  exercise: {
-    done: boolean;
-    type: string;
-    duration: string;
-    notes: string;
-  };
-  relaxation: {
-    done: boolean;
-    duration: string;
-    notes: string;
-  };
-  physicalHealth: {
-    symptoms: string;
-    notes: string;
-  };
-  substanceUse: {
-    alcohol: boolean;
-    drugs: boolean;
-    notes: string;
-  };
-  generalNotes: string;
-}
+import { SyncIndicator } from './SyncIndicator';
+import { useSyncContext } from '@/context/SyncContext';
+import { MoodData } from '@/types/mood';
 
 const MoodTracker = () => {
+  const {
+    entries,
+    isLoading,
+    addEntry,
+    deleteEntry,
+    exportCSV,
+    importCSV,
+    createEmptyMoodData,
+  } = useSyncContext();
+
   const [currentPage, setCurrentPage] = useState(-1);
   const [summaryData, setSummaryData] = useState<MoodData | null>(null);
-  const [moodData, setMoodData] = useState<MoodData>({
-    date: new Date().toISOString(),
-    mood: 0,
-    mixedState: false,
-    sleep: '',
-    uninterruptedSleep: false,
-    medication: {
-      taken: false,
-      names: '',
-      notes: ''
-    },
-    therapy: {
-      attended: false,
-      notes: ''
-    },
-    supportGroup: {
-      attended: false,
-      notes: ''
-    },
-    meals: {
-      count: null,
-      snacks: null,
-      notes: ''
-    },
-    exercise: {
-      done: false,
-      type: '',
-      duration: '',
-      notes: ''
-    },
-    relaxation: {
-      done: false,
-      duration: '',
-      notes: ''
-    },
-    physicalHealth: {
-      symptoms: '',
-      notes: ''
-    },
-    substanceUse: {
-      alcohol: false,
-      drugs: false,
-      notes: ''
-    },
-    generalNotes: ''
-  });
-
+  const [moodData, setMoodData] = useState<MoodData>(createEmptyMoodData());
   const [isEditing, setIsEditing] = useState(false);
-  const [moodHistory, setMoodHistory] = useState<MoodData[]>([]);
 
-  useEffect(() => {
-    fetch(`${API_BASE}/entries`)
-      .then(res => res.json())
-      .then(data => setMoodHistory(data))
-      .catch(() => {
-        const savedData = localStorage.getItem('moodHistory');
-        if (savedData) setMoodHistory(JSON.parse(savedData));
-      });
-  }, []);
-
-  const handleSubmit = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const existingEntryIndex = moodHistory.findIndex(
-      entry => entry.date.split('T')[0] === today
-    );
-
-    let newHistory;
-    if (existingEntryIndex >= 0) {
-      // Update existing entry
-      newHistory = [...moodHistory];
-      newHistory[existingEntryIndex] = moodData;
-      toast.success('Mooood entry updated! 🐮✨');
-    } else {
-      // Add new entry
-      newHistory = [...moodHistory, moodData];
-      toast.success('New mooood entry added! 🌟🐮');
-    }
-
-    setMoodHistory(newHistory);
-    localStorage.setItem('moodHistory', JSON.stringify(newHistory));
-    fetch(`${API_BASE}/entries`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(moodData)
-    }).catch(() => {});
+  const handleSubmit = async () => {
+    await addEntry(moodData);
     setSummaryData(moodData);
     setIsEditing(false);
     setCurrentPage(-1);
-    setMoodData({
-      date: new Date().toISOString(),
-      mood: 0,
-      mixedState: false,
-      sleep: '',
-      uninterruptedSleep: false,
-      medication: {
-        taken: false,
-        names: '',
-        notes: ''
-      },
-      therapy: {
-        attended: false,
-        notes: ''
-      },
-      supportGroup: {
-        attended: false,
-        notes: ''
-      },
-      meals: {
-        count: null,
-        snacks: null,
-        notes: ''
-      },
-      exercise: {
-        done: false,
-        type: '',
-        duration: '',
-        notes: ''
-      },
-      relaxation: {
-        done: false,
-        duration: '',
-        notes: ''
-      },
-      physicalHealth: {
-        symptoms: '',
-        notes: ''
-      },
-      substanceUse: {
-        alcohol: false,
-        drugs: false,
-        notes: ''
-      },
-      generalNotes: ''
-    });
+    setMoodData(createEmptyMoodData());
   };
 
   const handleEdit = (entry: MoodData) => {
@@ -215,167 +50,16 @@ const MoodTracker = () => {
     setCurrentPage(0);
   };
 
-  const downloadCSV = (entry: MoodData) => {
-    const formatDate = format(new Date(entry.date), 'yyyy-MM-dd');
-    const headers = [
-      'Date', 'Mood', 'Mixed State', 'Sleep Hours', 'Uninterrupted Sleep',
-      'Medications Taken', 'Medication Names', 'Therapy', 'Support Group',
-      'Meals', 'Snacks', 'Exercise', 'Exercise Type', 'Physical Symptoms',
-      'Substance Use', 'Notes'
-    ].join(',');
-
-    const values = [
-      formatDate,
-      entry.mood,
-      entry.mixedState ? 'Yes' : 'No',
-      entry.sleep,
-      entry.uninterruptedSleep ? 'Yes' : 'No',
-      entry.medication.taken ? 'Yes' : 'No',
-      entry.medication.names,
-      entry.therapy.attended ? 'Yes' : 'No',
-      entry.supportGroup.attended ? 'Yes' : 'No',
-      entry.meals.count ?? '',
-      entry.meals.snacks ?? '',
-      entry.exercise.done ? 'Yes' : 'No',
-      entry.exercise.type,
-      entry.physicalHealth.symptoms,
-      `Alcohol: ${entry.substanceUse.alcohol ? 'Yes' : 'No'}, Drugs: ${entry.substanceUse.drugs ? 'Yes' : 'No'}`,
-      entry.generalNotes
-    ].join(',');
-
-    const csvContent = `${headers}\n${values}`;
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `mood_tracker_${formatDate}.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
-
-  const handleDelete = (entryDate: string) => {
-    const newHistory = moodHistory.filter(entry => entry.date !== entryDate);
-    setMoodHistory(newHistory);
-    localStorage.setItem('moodHistory', JSON.stringify(newHistory));
-    toast.success('Entry deleted! 🗑');
-    fetch(`${API_BASE}/entries`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ date: entryDate })
-    }).catch(() => {});
-  };
-
-  const downloadAllCSV = () => {
-    const headers = [
-      'Date', 'Mood', 'Mixed State', 'Sleep Hours', 'Uninterrupted Sleep',
-      'Medications Taken', 'Medication Names', 'Therapy', 'Support Group',
-      'Meals', 'Snacks', 'Exercise', 'Exercise Type', 'Physical Symptoms',
-      'Substance Use', 'Notes'
-    ].join(',');
-
-    const rows = moodHistory.map(entry => [
-      format(new Date(entry.date), 'yyyy-MM-dd'),
-      entry.mood,
-      entry.mixedState ? 'Yes' : 'No',
-      entry.sleep,
-      entry.uninterruptedSleep ? 'Yes' : 'No',
-      entry.medication.taken ? 'Yes' : 'No',
-      entry.medication.names,
-      entry.therapy.attended ? 'Yes' : 'No',
-      entry.supportGroup.attended ? 'Yes' : 'No',
-      entry.meals.count ?? '',
-      entry.meals.snacks ?? '',
-      entry.exercise.done ? 'Yes' : 'No',
-      entry.exercise.type,
-      entry.physicalHealth.symptoms,
-      `Alcohol: ${entry.substanceUse.alcohol ? 'Yes' : 'No'}, Drugs: ${entry.substanceUse.drugs ? 'Yes' : 'No'}`,
-      entry.generalNotes
-    ].join(','));
-
-    const csvContent = `${headers}\n${rows.join('\n')}`;
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', `mood_tracker_all_entries.csv`);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+  const handleDelete = async (entryDate: string) => {
+    await deleteEntry(entryDate);
   };
 
   const handleBulkUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target?.result as string;
-        const rows = text.split('\n');
-        const newEntries = rows.slice(1).map(row => {
-          const values = row.split(',');
-          return {
-            date: values[0],
-            mood: parseInt(values[1]),
-            mixedState: values[2] === 'Yes',
-            sleep: values[3],
-            uninterruptedSleep: values[4] === 'Yes',
-            medication: {
-              taken: values[5] === 'Yes',
-              names: values[6],
-              notes: ''
-            },
-            therapy: {
-              attended: values[7] === 'Yes',
-              notes: ''
-            },
-            supportGroup: {
-              attended: values[8] === 'Yes',
-              notes: ''
-            },
-            meals: {
-              count: values[9] ? parseInt(values[9], 10) : null,
-              snacks: values[10] ? parseInt(values[10], 10) : null,
-              notes: ''
-            },
-            exercise: {
-              done: values[11] === 'Yes',
-              type: values[12],
-              duration: '',
-              notes: ''
-            },
-            relaxation: {
-              done: false,
-              duration: '',
-              notes: ''
-            },
-            physicalHealth: {
-              symptoms: values[13],
-              notes: ''
-            },
-            substanceUse: {
-              alcohol: values[14].includes('Alcohol: Yes'),
-              drugs: values[14].includes('Drugs: Yes'),
-              notes: ''
-            },
-            generalNotes: values[15] || ''
-          } as MoodData;
-        });
-
-        setMoodHistory(prev => [...prev, ...newEntries]);
-        localStorage.setItem('moodHistory', JSON.stringify([...moodHistory, ...newEntries]));
-        toast.success('Entries imported successfully! 📥');
-      } catch (error) {
-        console.error('Error parsing CSV:', error);
-        toast.error('Error uploading file. Please check the format.');
-      }
-    };
-    reader.readAsText(file);
+    importCSV(file);
+    // Reset input so same file can be uploaded again
+    event.target.value = '';
   };
 
   const pages = [
@@ -384,49 +68,57 @@ const MoodTracker = () => {
       component: (
         <div className="space-y-6">
           <WelcomeUser />
-          <MoodGraph data={moodHistory} />
-          <div className="flex justify-center gap-4 mb-6">
-            <Button 
-              onClick={() => setCurrentPage(1)}
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
-            >
-              🌟 Hay! Let's Track Today's Moood! 
-            </Button>
-          </div>
-          <MoodHistory 
-            entries={moodHistory} 
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onDownload={downloadCSV}
-          />
-          <div className="flex gap-4 mt-6">
-            <Button 
-              onClick={downloadAllCSV}
-              variant="outline"
-              className="w-full"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Download All
-            </Button>
-            <label className="w-full">
-              <Button 
-                variant="outline"
-                className="w-full"
-                onClick={() => document.getElementById('csvUpload')?.click()}
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                Upload CSV
-              </Button>
-              <input
-                id="csvUpload"
-                type="file"
-                accept=".csv"
-                className="hidden"
-                onChange={handleBulkUpload}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+            </div>
+          ) : (
+            <>
+              <MoodGraph data={entries} />
+              <div className="flex justify-center gap-4 mb-6">
+                <Button
+                  onClick={() => setCurrentPage(1)}
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
+                >
+                  🌟 Hay! Let's Track Today's Moood!
+                </Button>
+              </div>
+              <MoodHistory
+                entries={entries}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onDownload={(entry) => exportCSV(entry)}
               />
-            </label>
-          </div>
+              <div className="flex gap-4 mt-6">
+                <Button
+                  onClick={() => exportCSV()}
+                  variant="outline"
+                  className="w-full"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download All
+                </Button>
+                <label className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => document.getElementById('csvUpload')?.click()}
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Upload CSV
+                  </Button>
+                  <input
+                    id="csvUpload"
+                    type="file"
+                    accept=".csv"
+                    className="hidden"
+                    onChange={handleBulkUpload}
+                  />
+                </label>
+              </div>
+            </>
+          )}
         </div>
       )
     },
@@ -469,7 +161,7 @@ const MoodTracker = () => {
             <div className="flex items-center space-x-2">
               <Switch
                 checked={moodData.mixedState}
-                onCheckedChange={(checked: boolean) => 
+                onCheckedChange={(checked: boolean) =>
                   setMoodData({...moodData, mixedState: checked})}
               />
               <Label>Experiencing both high and low symptoms</Label>
@@ -485,8 +177,8 @@ const MoodTracker = () => {
           <div className="space-y-4">
             <Label className="block text-lg">Hours of Sleep</Label>
             <div className="relative">
-              <Input 
-                type="number" 
+              <Input
+                type="number"
                 placeholder="0"
                 className="text-center text-xl font-semibold pl-8 pr-12"
                 value={moodData.sleep}
@@ -499,7 +191,7 @@ const MoodTracker = () => {
               <Checkbox
                 id="uninterrupted"
                 checked={moodData.uninterruptedSleep}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   setMoodData({...moodData, uninterruptedSleep: checked as boolean})}
               />
               <Label htmlFor="uninterrupted" className="cursor-pointer">
@@ -523,9 +215,9 @@ const MoodTracker = () => {
                 <Checkbox
                   id="medication"
                   checked={moodData.medication.taken}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setMoodData({
-                      ...moodData, 
+                      ...moodData,
                       medication: {...moodData.medication, taken: checked as boolean}
                     })}
                 />
@@ -543,7 +235,7 @@ const MoodTracker = () => {
                     placeholder="Which medications? (optional)"
                     value={moodData.medication.names}
                     onChange={(e) => setMoodData({
-                      ...moodData, 
+                      ...moodData,
                       medication: {...moodData.medication, names: e.target.value}
                     })}
                     className="bg-white dark:bg-gray-800"
@@ -551,15 +243,15 @@ const MoodTracker = () => {
                 </motion.div>
               )}
             </div>
-            
+
             <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="therapy"
                   checked={moodData.therapy.attended}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setMoodData({
-                      ...moodData, 
+                      ...moodData,
                       therapy: {...moodData.therapy, attended: checked as boolean}
                     })}
                 />
@@ -568,15 +260,15 @@ const MoodTracker = () => {
                 </Label>
               </div>
             </div>
-            
+
             <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="support"
                   checked={moodData.supportGroup.attended}
-                  onCheckedChange={(checked) => 
+                  onCheckedChange={(checked) =>
                     setMoodData({
-                      ...moodData, 
+                      ...moodData,
                       supportGroup: {...moodData.supportGroup, attended: checked as boolean}
                     })}
                 />
@@ -637,30 +329,13 @@ const MoodTracker = () => {
               />
             </div>
           </div>
-          <div className="space-y-4">
-            <Label htmlFor="snacks">Number of Snacks</Label>
-            <Input
-              id="snacks"
-              type="number"
-              min="0"
-              max="10"
-              value={moodData.meals.snacks ?? ''}
-              onChange={(e) => setMoodData({
-                ...moodData,
-                meals: {
-                  ...moodData.meals,
-                  snacks: e.target.value === '' ? null : parseInt(e.target.value, 10)
-                }
-              })}
-            />
-          </div>
           <div className="flex items-center space-x-2 mt-4">
             <Checkbox
               id="exercise"
               checked={moodData.exercise.done}
-              onCheckedChange={(checked) => 
+              onCheckedChange={(checked) =>
                 setMoodData({
-                  ...moodData, 
+                  ...moodData,
                   exercise: {...moodData.exercise, done: checked as boolean}
                 })}
             />
@@ -697,9 +372,9 @@ const MoodTracker = () => {
               <Checkbox
                 id="alcohol"
                 checked={moodData.substanceUse.alcohol}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   setMoodData({
-                    ...moodData, 
+                    ...moodData,
                     substanceUse: {...moodData.substanceUse, alcohol: checked as boolean}
                   })}
               />
@@ -709,9 +384,9 @@ const MoodTracker = () => {
               <Checkbox
                 id="drugs"
                 checked={moodData.substanceUse.drugs}
-                onCheckedChange={(checked) => 
+                onCheckedChange={(checked) =>
                   setMoodData({
-                    ...moodData, 
+                    ...moodData,
                     substanceUse: {...moodData.substanceUse, drugs: checked as boolean}
                   })}
               />
@@ -737,7 +412,7 @@ const MoodTracker = () => {
               onChange={(e) => setMoodData({...moodData, generalNotes: e.target.value})}
             />
           </div>
-          
+
           <div className="p-6 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-lg text-center">
             <p className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">
               Ready to save your entry! 🎆
@@ -755,10 +430,16 @@ const MoodTracker = () => {
     <div className="relative min-h-screen w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-purple-950 dark:via-purple-900 dark:to-blue-950">
       <Toaster position="top-center" richColors />
       <Leaderboard />
+
+      {/* Sync Status Indicator */}
+      <div className="fixed right-4 top-4 z-50">
+        <SyncIndicator />
+      </div>
+
       {summaryData && (
         <MoodSummary data={summaryData} onClose={() => setSummaryData(null)} />
       )}
-      {/* Motivational messages can be added here if needed */}
+
       <div className="container mx-auto px-4 py-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -793,12 +474,12 @@ const MoodTracker = () => {
                         Step {currentPage + 1} of {pages.length}
                       </div>
                     </div>
-                    
+
                     <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">
                       {pages[currentPage].title}
                     </h2>
                   </div>
-                  
+
                   <div className="space-y-6">
                     {pages[currentPage].component}
                   </div>
