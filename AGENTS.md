@@ -75,3 +75,15 @@ This project uses shadcn-ui. These components are typically added via a CLI, and
 
 - Refer to the existing components in `src/components/ui/` and the overall application aesthetic when building new UI elements to maintain consistency.
 - The `components.json` file contains configuration related to `shadcn/ui` such as style and aliases.
+
+## Cursor Cloud specific instructions
+
+- **Services**: Two services must run concurrently for end-to-end development:
+  - Express API server on port 3001: `npm run server` (uses embedded SQLite, auto-creates `data.db`)
+  - Vite frontend dev server on port 5173: `npm run dev`
+- **No authentication**: Despite CLAUDE.md mentioning JWT auth, the current `server.js` has no auth middleware. The API exposes simple CRUD endpoints at `/entries` without authentication.
+- **`.env` file**: Already committed with `VITE_API_BASE_URL=http://localhost:3001`. No additional secrets are needed.
+- **SQLite `data.db`**: Created automatically on first `npm run server` run. Delete it to reset all data.
+- **Lint warnings**: `npm run lint` produces 7 `react-refresh/only-export-components` warnings. These are pre-existing and acceptable; zero errors is the passing bar.
+- **Tests**: `npm test` runs `vitest run` (9 tests across 3 files). All pass without needing the servers running.
+- See `README.md` and `CLAUDE.md` for standard commands.
