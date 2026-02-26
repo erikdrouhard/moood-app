@@ -79,7 +79,7 @@ const MoodTracker = () => {
                 <Button
                   onClick={() => setCurrentPage(1)}
                   size="lg"
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
+                  className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg transform hover:scale-105 transition-all duration-200"
                 >
                   🌟 Hay! Let's Track Today's Moood!
                 </Button>
@@ -413,7 +413,7 @@ const MoodTracker = () => {
             />
           </div>
 
-          <div className="p-6 bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-lg text-center">
+          <div className="p-6 bg-purple-100 dark:bg-purple-900/30 rounded-lg text-center">
             <p className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">
               Ready to save your entry! 🎆
             </p>
@@ -427,7 +427,7 @@ const MoodTracker = () => {
   ];
 
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-purple-950 dark:via-purple-900 dark:to-blue-950">
+    <div className="relative min-h-screen w-full bg-purple-50 dark:bg-purple-950">
       <Toaster position="top-center" richColors />
       <Leaderboard />
 
@@ -464,7 +464,7 @@ const MoodTracker = () => {
                     <div className="relative">
                       <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                         <motion.div
-                          className="h-full bg-gradient-to-r from-purple-600 to-pink-600"
+                          className="h-full bg-purple-600"
                           initial={{ width: 0 }}
                           animate={{ width: `${((currentPage + 1) / pages.length) * 100}%` }}
                           transition={{ duration: 0.3 }}
@@ -475,7 +475,7 @@ const MoodTracker = () => {
                       </div>
                     </div>
 
-                    <h2 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent text-center">
+                    <h2 className="text-2xl font-bold text-purple-600 dark:text-purple-400 text-center">
                       {pages[currentPage].title}
                     </h2>
                   </div>
@@ -504,7 +504,7 @@ const MoodTracker = () => {
                         onClick={handleSubmit}
                         className={cn(
                           "w-full sm:w-auto px-6",
-                          "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700",
+                          "bg-purple-600 hover:bg-purple-700",
                           "transition-all duration-200 ease-in-out shadow-lg",
                           "flex items-center justify-center gap-2 text-white"
                         )}
@@ -516,7 +516,7 @@ const MoodTracker = () => {
                         onClick={() => setCurrentPage(currentPage + 1)}
                         className={cn(
                           "w-full sm:w-auto px-4",
-                          "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700",
+                          "bg-purple-600 hover:bg-purple-700",
                           "transition-all duration-200 ease-in-out shadow-lg",
                           "flex items-center justify-center gap-2 text-white"
                         )}
